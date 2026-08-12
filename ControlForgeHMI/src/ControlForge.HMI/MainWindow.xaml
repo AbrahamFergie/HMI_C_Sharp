@@ -1,0 +1,97 @@
+<Window x:Class="ControlForge.HMI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ControlForge HMI"
+        Height="520"
+        Width="760"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,18">
+            <TextBlock Text="ControlForge HMI" FontSize="26" FontWeight="Bold" />
+            <TextBlock Text="MVVM + async PLC polling + equipment model" FontSize="14" />
+        </StackPanel>
+
+        <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" CornerRadius="6" Padding="16" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Equipment" FontWeight="Bold" />
+                    <TextBlock Text="{Binding PumpName}" FontSize="20" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="State" FontWeight="Bold" />
+                    <TextBlock Text="{Binding State}" FontSize="20" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Enabled" FontWeight="Bold" />
+                    <Ellipse Width="18" Height="18" Margin="0,0,0,8">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="Gray" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Faulted, Mode=OneWay}" Value="True">
+                                        <Setter Property="Fill" Value="Red" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Running}" Value="True">
+                                        <Setter Property="Fill" Value="Green" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                    <CheckBox IsChecked="{Binding Enabled}" IsEnabled="False" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="Live Data" Grid.Column="0" Margin="0,0,8,0">
+                <StackPanel Margin="12">
+                    <TextBlock Text="Speed (RPM)" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Speed, StringFormat=F1}" FontSize="24" Margin="0,0,0,10" />
+                    <TextBlock Text="Current (A)" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Current, StringFormat=F2}" FontSize="24" Margin="0,0,0,10" />
+                    <CheckBox Content="Running" IsChecked="{Binding Running}" IsEnabled="False" />
+                    <CheckBox Content="Faulted" IsChecked="{Binding Faulted, Mode=OneWay}" IsEnabled="False" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Commands" Grid.Column="1" Margin="8,0,0,0">
+                <StackPanel Margin="12">
+                    <Button Content="START" Command="{Binding StartCommand}" Height="42" Margin="0,0,0,8" />
+                    <Button Content="STOP" Command="{Binding StopCommand}" Height="42" Margin="0,0,0,8" />
+                    <Button Content="RESET FAULT" Command="{Binding ResetFaultCommand}" Height="42" />
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+
+        <GroupBox Header="Event Log" Grid.Row="3" Margin="0,0,0,16">
+            <ListBox ItemsSource="{Binding EventLog}" Margin="8" />
+        </GroupBox>
+
+        <StatusBar Grid.Row="4">
+            <StatusBarItem Content="{Binding StatusMessage}" />
+        </StatusBar>
+    </Grid>
+</Window>
+
